@@ -34,8 +34,8 @@ spec:
   duration: "{{ .Values.tls.common.duration }}"
   renewBefore: "{{ .Values.tls.common.renewBefore }}"
   subject:
-    organization:
-{{ toYaml .Values.tls.common.organization | indent 4 }}
+    organizations:
+    - {{ .Values.tls.common.organization }}
   # The use of the common name field has been deprecated since 2000 and is
   # discouraged from being used.
   commonName: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
@@ -76,8 +76,8 @@ spec:
   duration: "{{ .Values.tls.common.duration }}"
   renewBefore: "{{ .Values.tls.common.renewBefore }}"
   subject:
-    organization:
-{{ toYaml .Values.tls.common.organization | indent 4 }}
+    organizations:
+    - {{ .Values.tls.common.organization }}
   # The use of the common name field has been deprecated since 2000 and is
   # discouraged from being used.
   commonName: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}"
@@ -117,8 +117,8 @@ spec:
   duration: "{{ .Values.tls.common.duration }}"
   renewBefore: "{{ .Values.tls.common.renewBefore }}"
   subject:
-    organization:
-{{ toYaml .Values.tls.common.organization | indent 4 }}
+    organizations:
+    - {{ .Values.tls.common.organization }}
   # The use of the common name field has been deprecated since 2000 and is
   # discouraged from being used.
   commonName: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
@@ -157,8 +157,8 @@ spec:
   duration: "{{ .Values.tls.common.duration }}"
   renewBefore: "{{ .Values.tls.common.renewBefore }}"
   subject:
-    organization:
-{{ toYaml .Values.tls.common.organization | indent 4 }}
+    organizations:
+    - {{ .Values.tls.common.organization }}
   # The use of the common name field has been deprecated since 2000 and is
   # discouraged from being used.
   commonName: "{{ template "pulsar.fullname" . }}-{{ .Values.autorecovery.component }}"
@@ -194,8 +194,8 @@ spec:
   duration: "{{ .Values.tls.common.duration }}"
   renewBefore: "{{ .Values.tls.common.renewBefore }}"
   subject:
-    organization:
-{{ toYaml .Values.tls.common.organization | indent 4 }}
+    organizations:
+    - {{ .Values.tls.common.organization }}
   # The use of the common name field has been deprecated since 2000 and is
   # discouraged from being used.
   commonName: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
@@ -234,8 +234,8 @@ spec:
   duration: "{{ .Values.tls.common.duration }}"
   renewBefore: "{{ .Values.tls.common.renewBefore }}"
   subject:
-    organization:
-{{ toYaml .Values.tls.common.organization | indent 4 }}
+    organizations:
+    - {{ .Values.tls.common.organization }}
   # The use of the common name field has been deprecated since 2000 and is
   # discouraged from being used.
   commonName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsar_manager.component }}"
@@ -275,8 +275,8 @@ spec:
   duration: "{{ .Values.tls.common.duration }}"
   renewBefore: "{{ .Values.tls.common.renewBefore }}"
   subject:
-    organization:
-{{ toYaml .Values.tls.common.organization | indent 4 }}
+    organizations:
+    - {{ .Values.tls.common.organization }}
   # The use of the common name field has been deprecated since 2000 and is
   # discouraged from being used.
   commonName: "{{ template "pulsar.fullname" . }}-{{ .Values.toolset.component }}"
