@@ -329,7 +329,7 @@ Define broker runtime volumes
 Define key offload options mounts
 */}}
 {{- define "pulsar.broker.offload.volumeMounts" -}}
-{{- if .Values.broker.offload.key.enabled }}
+{{- if .Values.broker.offload.gcs.enabled }}
 - name: key-offloader-service-acccount
   mountPath: /pulsar/srvaccts
   readOnly: true
