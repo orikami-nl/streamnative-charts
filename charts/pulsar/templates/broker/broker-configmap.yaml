@@ -58,7 +58,7 @@ data:
   gcsManagedLedgerOffloadMaxBlockSizeInBytes: "{{ .Values.broker.offload.gcs.gcsManagedLedgerOffloadMaxBlockSizeInBytes }}"
   gcsManagedLedgerOffloadReadBufferSizeInBytes: "{{ .Values.broker.offload.gcs.gcsManagedLedgerOffloadReadBufferSizeInBytes }}"
   ## Authentication with GCS
-  gcsManagedLedgerOffloadServiceAccountKeyFile: "/pulsar/srvaccts/gcs.json"
+  gcsManagedLedgerOffloadServiceAccountKeyFile: "/pulsar/srvaccts/key.json"
   {{- end }}
   {{- if .Values.broker.offload.s3.enabled }}
   # aws-s3
