@@ -36,16 +36,8 @@ spec:
         imagePullPolicy: {{ .Values.images.bookie.pullPolicy }}
         command: ["sh", "-c"]
         args:
-          - >-
-            {{- if $zk:=.Values.pulsar_metadata.userProvidedZookeepers }}
-            until bin/pulsar zookeeper-shell -server {{ $zk }} ls {{ or .Values.metadataPrefix "/" }}; do
-              echo "user provided zookeepers {{ $zk }} are unreachable... check in 3 seconds ..." && sleep 3;
-            done;
-            {{ else }}
-            until nslookup {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ add (.Values.zookeeper.replicaCount | int) -1 }}.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ template "pulsar.namespace" . }}; do
-              sleep 3;
-            done;
-            {{- end}}
+          - >
+            {{- if $zk:=.Values.pulsar_metadata.userProvidedZookeepers }} until bin/pulsar zookeeper-shell -server {{ $zk }} ls {{ or .Values.metadataPrefix "/" }}; do echo "user provided zookeepers {{ $zk }} are unreachable... check in 3 seconds ..." && sleep 3; done; {{ else }} until nslookup {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ add (.Values.zookeeper.replicaCount | int) -1 }}.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ template "pulsar.namespace" . }}; do sleep 3; done; {{- end}}
         {{- if .Values.zookeeper.customTools.restore.enable }}
       - name: pulsar-metadata-cleanup
         image: "{{ .Values.zookeeper.customTools.restore.repository }}:{{ .Values.zookeeper.customTools.restore.tag }}"
@@ -53,13 +45,7 @@ spec:
         command: ["sh", "-c"]
         args:
           - >
-            {{- include "pulsar.toolset.zookeeper.tls.settings" . | nindent 12 }}
-            {{ if and .Values.tls.enabled .Values.tls.zookeeper.enabled }}
-            export "$(cat conf/pulsar_env.sh | xargs)";
-            export "OPTS=${PULSAR_EXTRA_OPTS}";
-            env;
-            {{- end }}
-            bin/pulsar-metadata-tool cleanup
+            {{- include "pulsar.toolset.zookeeper.tls.settings" . | nindent 12 }} {{ if and .Values.tls.enabled .Values.tls.zookeeper.enabled }} export "$(cat conf/pulsar_env.sh | xargs)"; export "OPTS=${PULSAR_EXTRA_OPTS}"; env; {{- end }} bin/pulsar-metadata-tool cleanup
         env:
           - name: METADATA_TOOL_CONF
             value: "/pulsar-metadata-tool/conf/pulsar-metadata-tool/pulsar-metadata-tool.properties"
@@ -79,16 +65,7 @@ spec:
         command: ["sh", "-c"]
         args:
           - >
-            bin/apply-config-from-env.py conf/bookkeeper.conf;
-            {{- include "pulsar.toolset.zookeeper.tls.settings" . | nindent 12 }}
-            if bin/bookkeeper shell whatisinstanceid; then
-                echo "bookkeeper cluster already initialized";
-            else
-                {{- if not (eq .Values.metadataPrefix "") }}
-                bin/bookkeeper org.apache.zookeeper.ZooKeeperMain -server {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} create {{ .Values.metadataPrefix }} 'created for pulsar cluster "{{ template "pulsar.fullname" . }}"' || yes &&
-                {{- end }}
-                bin/bookkeeper shell initnewcluster;
-            fi
+            bin/apply-config-from-env.py conf/bookkeeper.conf; {{- include "pulsar.toolset.zookeeper.tls.settings" . | nindent 12 }} if bin/bookkeeper shell whatisinstanceid; then echo "bookkeeper cluster already initialized"; else {{- if not (eq .Values.metadataPrefix "") }} bin/bookkeeper org.apache.zookeeper.ZooKeeperMain -server {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} create {{ .Values.metadataPrefix }} 'created for pulsar cluster "{{ template "pulsar.fullname" . }}"' || yes && {{- end }} bin/bookkeeper shell initnewcluster; fi
         envFrom:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"

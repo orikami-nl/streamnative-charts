@@ -39,13 +39,7 @@ spec:
         command: ["sh", "-c"]
         args:
           - >
-            pmServiceNumber="$(nslookup -timeout=10 {{ template "pulsar.fullname" . }}-{{ .Values.pulsar_manager.component }}-backend | grep Name | wc -l)";
-            until [ ${pmServiceNumber} -ge 1 ]; do
-              echo "Pulsar Manager cluster {{ template "pulsar.fullname" . }} isn't ready yet ... check in 10 seconds ...";
-              sleep 10;
-              pmServiceNumber="$(nslookup -timeout=10 {{ template "pulsar.fullname" . }}-{{ .Values.pulsar_manager.component }}-backend | grep Name | wc -l)";
-            done;
-            echo "Pulsar Manager cluster is ready";
+            pmServiceNumber="$(nslookup -timeout=10 {{ template "pulsar.fullname" . }}-{{ .Values.pulsar_manager.component }}-backend | grep Name | wc -l)"; until [ ${pmServiceNumber} -ge 1 ]; do echo "Pulsar Manager cluster {{ template "pulsar.fullname" . }} isn't ready yet ... check in 10 seconds ..."; sleep 10; pmServiceNumber="$(nslookup -timeout=10 {{ template "pulsar.fullname" . }}-{{ .Values.pulsar_manager.component }}-backend | grep Name | wc -l)"; done; echo "Pulsar Manager cluster is ready";
       containers:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsar_metadata.component }}"
         image: "{{ .Values.images.pulsar_manager.repository }}:{{ .Values.images.pulsar_manager.tag }}"
@@ -53,14 +47,7 @@ spec:
         command: ["sh", "-c"]
         args:
           - >
-            apk add curl;
-            export CSRF_TOKEN=$(curl http://{{ template "pulsar.fullname" . }}-{{ .Values.pulsar_manager.component }}-backend:{{ .Values.pulsar_manager.ports.backend }}/pulsar-manager/csrf-token);
-            curl -H "Content-Type: application/json" \
-                 -H "X-XSRF-TOKEN: $CSRF_TOKEN" \
-                 -H "Cookie: XSRF-TOKEN=$CSRF_TOKEN;" \
-                 -X PUT \
-                 http://{{ template "pulsar.fullname" . }}-{{ .Values.pulsar_manager.component }}-backend:{{ .Values.pulsar_manager.ports.backend }}/pulsar-manager/users/superuser \
-                 -d '{"name": "{{ .Values.pulsar_manager.superuser.user }}", "password": "{{ .Values.pulsar_manager.superuser.password }}", "description": "{{ .Values.pulsar_manager.superuser.description }}", "email": "{{ .Values.pulsar_manager.superuser.email }}"}' 
+            apk add curl; export CSRF_TOKEN=$(curl http://{{ template "pulsar.fullname" . }}-{{ .Values.pulsar_manager.component }}-backend:{{ .Values.pulsar_manager.ports.backend }}/pulsar-manager/csrf-token); curl -H "Content-Type: application/json" -H "X-XSRF-TOKEN: $CSRF_TOKEN" -H "Cookie: XSRF-TOKEN=$CSRF_TOKEN;" -X PUT http://{{ template "pulsar.fullname" . }}-{{ .Values.pulsar_manager.component }}-backend:{{ .Values.pulsar_manager.ports.backend }}/pulsar-manager/users/superuser -d '{"name": "{{ .Values.pulsar_manager.superuser.user }}", "password": "{{ .Values.pulsar_manager.superuser.password }}", "description": "{{ .Values.pulsar_manager.superuser.description }}", "email": "{{ .Values.pulsar_manager.superuser.email }}"}' 
       restartPolicy: Never
 {{- end }}
 {{- end }}
