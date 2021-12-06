@@ -36,8 +36,16 @@ spec:
         imagePullPolicy: {{ .Values.images.bookie.pullPolicy }}
         command: ["sh", "-c"]
         args:
-          - >
-            {{- if $zk:=.Values.pulsar_metadata.userProvidedZookeepers }} until bin/pulsar zookeeper-shell -server {{ $zk }} ls {{ or .Values.metadataPrefix "/" }}; do echo "user provided zookeepers {{ $zk }} are unreachable... check in 3 seconds ..." && sleep 3; done; {{ else }} until nslookup {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ add (.Values.zookeeper.replicaCount | int) -1 }}.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ template "pulsar.namespace" . }}; do sleep 3; done; {{- end}}
+          - >-
+            {{- if $zk:=.Values.pulsar_metadata.userProvidedZookeepers }}
+            until bin/pulsar zookeeper-shell -server {{ $zk }} ls {{ or .Values.metadataPrefix "/" }}; do
+              echo "user provided zookeepers {{ $zk }} are unreachable... check in 3 seconds ..." && sleep 3;
+            done;
+            {{ else }}
+            until nslookup {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ add (.Values.zookeeper.replicaCount | int) -1 }}.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ template "pulsar.namespace" . }}; do
+              sleep 3;
+            done;
+            {{- end}}
         {{- if .Values.zookeeper.customTools.restore.enable }}
       - name: pulsar-metadata-cleanup
         image: "{{ .Values.zookeeper.customTools.restore.repository }}:{{ .Values.zookeeper.customTools.restore.tag }}"
